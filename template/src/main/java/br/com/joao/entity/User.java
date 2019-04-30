@@ -1,107 +1,106 @@
 package br.com.joao.entity;
 
+import br.com.joao.vo.UserVO;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import br.com.joao.vo.UserVO;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
 @Entity
 @Data
 @Table(name = "user")
-@ToString(callSuper = true, exclude = { "password" })
-@JsonIgnoreProperties({ "password" })
+@ToString(callSuper = true, exclude = {"password"})
+@JsonIgnoreProperties(value = {"password"}, allowSetters = true)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity<Long> implements UserDetails {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String name;
+    private String name;
 
-	private String email;
+    private String email;
 
-	private String password;
+    @Column(updatable = false)
+    private String password;
 
-	private boolean status;
+    private boolean status;
 
-	@Column(name = "creation_date_time")
-	private LocalDateTime creationDateTime;
+    @Column(name = "creation_date_time")
+    private LocalDateTime creationDateTime;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
 
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-		return authorities;
-	}
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return authorities;
+    }
 
-	@Override
-	public String getPassword() {
+    @Override
+    public String getPassword() {
 
-		return password;
-	}
+        return password;
+    }
 
-	@Override
-	public String getUsername() {
+    @Override
+    public String getUsername() {
 
-		return email;
-	}
+        return email;
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
+    @Override
+    public boolean isAccountNonExpired() {
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
+    @Override
+    public boolean isAccountNonLocked() {
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
+    @Override
+    public boolean isCredentialsNonExpired() {
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean isEnabled() {
+    @Override
+    public boolean isEnabled() {
 
-		return status;
-	}
+        return status;
+    }
 
-	public UserVO toVO() {
+    public UserVO toVO() {
 
-		UserVO vo = new UserVO();
-		vo.setId(getId());
-		vo.setEmail(email);
-		vo.setName(name);
-		vo.setStatus(status);
-		vo.setCreationDateTime(creationDateTime);
+        UserVO vo = new UserVO();
+        vo.setId(getId());
+        vo.setEmail(email);
+        vo.setName(name);
+        vo.setStatus(status);
+        vo.setCreationDateTime(creationDateTime);
 
-		if (getAuthorities() != null && !getAuthorities().isEmpty()) {
-			vo.setAuthorities(new String[getAuthorities().size()]);
+        if (getAuthorities() != null && !getAuthorities().isEmpty()) {
+            vo.setAuthorities(new String[getAuthorities().size()]);
 
-			int i = 0;
-			for (GrantedAuthority g : getAuthorities()) {
-				vo.getAuthorities()[i++] = g.getAuthority();
-			}
-		}
+            int i = 0;
+            for (GrantedAuthority g : getAuthorities()) {
+                vo.getAuthorities()[i++] = g.getAuthority();
+            }
+        }
 
-		return vo;
-	}
+        return vo;
+    }
 }
