@@ -1,2 +1,2 @@
 # template
-springboot2, java10, spring-security, mongo
+springboot2, java11, spring-security, mysql
