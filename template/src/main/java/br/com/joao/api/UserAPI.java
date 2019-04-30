@@ -48,7 +48,7 @@ public class UserAPI {
 	}
 
 	@PutMapping(path = { "/{id}" }, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Void> update(@PathVariable(name = "id") String id, @RequestBody UserVO userVO) {
+	public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody UserVO userVO) {
 
 		log.debug("Inicializando o update [{}].", userVO);
 
@@ -62,10 +62,6 @@ public class UserAPI {
 			user.setCreationDateTime(LocalDateTime.now());
 			user.setPassword(passwordEncoder.encode(userVO.getPassword()));
 
-			if (userVO.getAuthorities() != null) {
-
-				user.setAuthorities(AuthorityUtils.createAuthorityList(userVO.getAuthorities()));
-			}
 			return ResponseEntity.noContent().build();
 		} else {
 			log.debug("Entidade não encontrada [{}].", id);
@@ -75,7 +71,7 @@ public class UserAPI {
 	}
 
 	@GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<UserVO> findById(@PathVariable("id") String id) {
+	public ResponseEntity<UserVO> findById(@PathVariable("id") Long id) {
 
 		log.debug("Buscando entidade [{}].", id);
 
@@ -97,7 +93,7 @@ public class UserAPI {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable(name = "id") String id) {
+	public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
 
 		log.debug("Excluindo entidade [{}].", id);
 		if (userService.existsById(id)) {

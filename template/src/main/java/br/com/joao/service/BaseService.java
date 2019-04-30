@@ -1,10 +1,10 @@
 package br.com.joao.service;
 
+import br.com.joao.entity.BaseEntity;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
-
-import br.com.joao.entity.BaseEntity;
 
 /**
  * Classe genérica que define funções para o serviço.
@@ -56,8 +56,8 @@ public interface BaseService<I extends Serializable, E extends BaseEntity<I>> {
 	/**
 	 * Verifica se o ID existe no banco.
 	 * 
-	 * @param id
-	 * @return
+	 * @param id ID a ser pesquisado
+	 * @return true ou false
 	 */
 	boolean existsById(I id);
 }

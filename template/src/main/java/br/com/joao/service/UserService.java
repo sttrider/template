@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import br.com.joao.entity.User;
 import br.com.joao.vo.UserVO;
 
-public interface UserService extends BaseService<String, User>, UserDetailsService {
+public interface UserService extends BaseService<Long, User>, UserDetailsService {
 
 	User create(User user);
 

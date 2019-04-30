@@ -1,46 +1,47 @@
 package br.com.joao.service.impl;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
 import br.com.joao.entity.User;
 import br.com.joao.repository.UserRepository;
 import br.com.joao.service.UserService;
 import br.com.joao.vo.UserVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
-public class UserServiceImpl extends BaseServiceImpl<String, User> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<Long, User> implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-		Optional<User> user = userRepository.findByEmail(username);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		return user.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
-	}
+        Optional<User> user = userRepository.findByEmail(username);
 
-	@Override
-	public User create(User user) {
-		return userRepository.save(user);
-	}
+        return user.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
+    }
 
-	@Override
-	protected MongoRepository<User, String> getRepository() {
-		return userRepository;
-	}
+    @Override
+    public User create(User user) {
+        return userRepository.save(user);
+    }
 
-	@Override
-	public List<User> findByFilter(UserVO filter) {
-		return userRepository.findByFiltro(filter);
-	}
 
+    @Override
+    public List<User> findByFilter(UserVO filter) {
+        return userRepository.findByFiltro(filter);
+    }
+
+    @Override
+    protected UserRepository getRepository() {
+        return userRepository;
+    }
 }

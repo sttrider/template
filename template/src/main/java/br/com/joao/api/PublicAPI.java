@@ -44,12 +44,7 @@ public class PublicAPI {
 		user.setCreationDateTime(LocalDateTime.now());
 		user.setPassword(passwordEncoder.encode(userVO.getPassword()));
 
-		if (userVO.getAuthorities() != null) {
-
-            user.setAuthorities(AuthorityUtils.createAuthorityList(userVO.getAuthorities()));
-        }
-		
-		String idSaved = userService.create(user).getId();
+		Long idSaved = userService.create(user).getId();
 
 		UriComponents uriComponents = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(idSaved);

@@ -22,7 +22,7 @@ public class UserAuthenticationFacadeImpl implements UserAuthenticationFacade {
 		HashMap<String, Object> user = (HashMap<String, Object>) details.get("user");
 
 		User userEntity = new User();
-		userEntity.setId(user.get("id").toString());
+		userEntity.setId(Long.valueOf(user.get("id").toString()));
 		return userEntity;
 	}
 

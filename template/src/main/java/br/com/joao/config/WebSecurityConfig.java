@@ -6,67 +6,34 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import br.com.joao.service.UserService;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserService usuarioService;
+	private final DaoAuthenticationProvider authenticationProvider;
+
+	public WebSecurityConfig(DaoAuthenticationProvider authenticationProvider) {
+		this.authenticationProvider = authenticationProvider;
+	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
 		//@formatter:off
 		http.authorizeRequests()
-			.antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/resources/**", "/public/**", "/webjars/**", "/oauth/**", "/error").permitAll()
-			.anyRequest().hasRole("ADMIN")
-			.and().formLogin().loginPage("/login").defaultSuccessUrl("/index").permitAll()
-			.and().logout().logoutUrl("/appLogout").logoutSuccessUrl("/login").permitAll()
-			.and().exceptionHandling().accessDeniedPage("/login?error=accessDenied")
-			.and().headers().frameOptions().disable().and().csrf().disable();
+			.antMatchers("/login").permitAll()
+			.anyRequest().authenticated();
 		//@formatter:on
 	}
 
 	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+	public void configureGlobal(AuthenticationManagerBuilder auth) {
 
-		auth.authenticationProvider(authenticationProvider());
+		auth.authenticationProvider(authenticationProvider);
 
-	}
-
-	/**
-	 * Configura um serviço que irá fazer a consulta de usuário no sistema.
-	 * 
-	 * @return Configuração do serviço e qual o método de senha utilizado.
-	 */
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider() {
-
-		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-		authProvider.setUserDetailsService(usuarioService);
-		authProvider.setPasswordEncoder(encoder());
-		return authProvider;
-	}
-
-	/**
-	 * Configura uma forma global de como gerar o encoder da senha.
-	 * 
-	 * @return retorna uma instancia do {@link BCryptPasswordEncoder}.
-	 */
-	@Bean
-	public PasswordEncoder encoder() {
-
-		return new BCryptPasswordEncoder(11);
 	}
 
 	@Override

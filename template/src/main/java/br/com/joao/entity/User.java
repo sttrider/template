@@ -1,12 +1,13 @@
 package br.com.joao.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.joao.vo.UserVO;
@@ -14,30 +15,36 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@Document
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
 @Data
-@ToString(callSuper = true)
+@Table(name = "user")
+@ToString(callSuper = true, exclude = { "password" })
+@JsonIgnoreProperties({ "password" })
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity<String> implements UserDetails {
+public class User extends BaseEntity<Long> implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 
-	@Indexed(unique = true)
 	private String email;
 
 	private String password;
 
 	private boolean status;
 
+	@Column(name = "creation_date_time")
 	private LocalDateTime creationDateTime;
-
-	private List<GrantedAuthority> authorities;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		return authorities;
 	}
 
@@ -86,11 +93,12 @@ public class User extends BaseEntity<String> implements UserDetails {
 		vo.setStatus(status);
 		vo.setCreationDateTime(creationDateTime);
 
-		if (authorities != null && !authorities.isEmpty()) {
-			vo.setAuthorities(new String[authorities.size()]);
+		if (getAuthorities() != null && !getAuthorities().isEmpty()) {
+			vo.setAuthorities(new String[getAuthorities().size()]);
 
-			for (int i = 0; i < authorities.size(); i++) {
-				vo.getAuthorities()[i] = authorities.get(i).getAuthority();
+			int i = 0;
+			for (GrantedAuthority g : getAuthorities()) {
+				vo.getAuthorities()[i++] = g.getAuthority();
 			}
 		}
 

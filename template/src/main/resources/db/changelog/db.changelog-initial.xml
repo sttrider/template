@@ -1,0 +1,77 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="joao.moreira" id="1">
+        <createTable tableName="oauth_access_token">
+            <column name="authentication_id" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token_id" type="VARCHAR(256)"/>
+            <column name="token" type="BLOB"/>
+            <column name="user_name" type="VARCHAR(256)"/>
+            <column name="client_id" type="VARCHAR(256)"/>
+            <column name="authentication" type="BLOB"/>
+            <column name="refresh_token" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="joao.moreira" id="2">
+        <createTable tableName="oauth_client_details">
+            <column name="client_id" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_ids" type="VARCHAR(256)"/>
+            <column name="client_secret" type="VARCHAR(256)"/>
+            <column name="scope" type="VARCHAR(256)"/>
+            <column name="authorized_grant_types" type="VARCHAR(256)"/>
+            <column name="web_server_redirect_uri" type="VARCHAR(256)"/>
+            <column name="authorities" type="VARCHAR(256)"/>
+            <column name="access_token_validity" type="INT"/>
+            <column name="refresh_token_validity" type="INT"/>
+            <column name="additional_information" type="VARCHAR(4096)"/>
+            <column name="autoapprove" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="joao.moreira" id="3">
+        <createTable tableName="oauth_client_token">
+            <column name="authentication_id" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token_id" type="VARCHAR(256)"/>
+            <column name="token" type="BLOB"/>
+            <column name="user_name" type="VARCHAR(256)"/>
+            <column name="client_id" type="VARCHAR(256)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="joao.moreira" id="4">
+        <createTable tableName="oauth_refresh_token">
+            <column name="token_id" type="VARCHAR(256)"/>
+            <column name="token" type="BLOB"/>
+            <column name="authentication" type="BLOB"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="joao.moreira" id="5">
+        <createTable tableName="user">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column defaultValueBoolean="true" name="status" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="creation_date_time" type="TIMESTAMP"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="joao.moreira" id="6">
+        <addPrimaryKey columnNames="authentication_id" constraintName="PRIMARY" tableName="oauth_access_token"/>
+    </changeSet>
+    <changeSet author="joao.moreira" id="7">
+        <addPrimaryKey columnNames="client_id" constraintName="PRIMARY" tableName="oauth_client_details"/>
+    </changeSet>
+    <changeSet author="joao.moreira" id="8">
+        <addPrimaryKey columnNames="authentication_id" constraintName="PRIMARY" tableName="oauth_client_token"/>
+    </changeSet>
+
+</databaseChangeLog>

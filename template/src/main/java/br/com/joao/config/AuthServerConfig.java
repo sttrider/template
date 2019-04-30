@@ -32,21 +32,26 @@ import br.com.joao.service.UserService;
 @EnableAuthorizationServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
-	@Autowired
-	@Qualifier("authenticationManagerBean")
-	private AuthenticationManager authenticationManager;
+	private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	private final CustomAccessTokenConverter customAccessTokenConverter;
+
+	public AuthServerConfig(@Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager, UserService userService, CustomAccessTokenConverter customAccessTokenConverter) {
+		this.authenticationManager = authenticationManager;
+		this.userService = userService;
+		this.customAccessTokenConverter = customAccessTokenConverter;
+	}
 
 	@Override
-	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+	public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
 
 		oauthServer.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
 	}
 
 	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 
 		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
@@ -72,6 +77,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	public JwtAccessTokenConverter accessTokenConverter() {
 
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+		converter.setAccessTokenConverter(customAccessTokenConverter);
+
 		converter.setSigningKey("123");
 		return converter;
 	}

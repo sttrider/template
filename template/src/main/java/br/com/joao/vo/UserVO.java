@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class UserVO extends BaseVO<String> {
+public class UserVO extends BaseVO<Long> {
 
 	private static final long serialVersionUID = 1L;
 
