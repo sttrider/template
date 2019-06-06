@@ -4,29 +4,17 @@ import br.com.joao.entity.User;
 import br.com.joao.repository.UserRepository;
 import br.com.joao.service.UserService;
 import br.com.joao.vo.UserVO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class UserServiceImpl extends BaseServiceImpl<Long, User> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<String, User> implements UserService {
 
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        Optional<User> user = userRepository.findByEmail(username);
-
-        return user.orElseThrow(() -> new UsernameNotFoundException("No user found with username " + username));
     }
 
     @Override

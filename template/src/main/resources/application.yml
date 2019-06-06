@@ -1,5 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/resultcontrolall?useSSL=false&allowPublicKeyRetrieval=true
-    username: joao
-    password: senha

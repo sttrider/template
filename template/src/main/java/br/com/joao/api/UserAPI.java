@@ -6,7 +6,6 @@ import br.com.joao.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,11 +20,9 @@ public class UserAPI {
 
     private final UserService userService;
 
-    private final PasswordEncoder passwordEncoder;
 
-    public UserAPI(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserAPI(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/findAll")
@@ -41,7 +38,7 @@ public class UserAPI {
     }
 
     @PutMapping(path = {"/{id}"}, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> update(@PathVariable(name = "id") Long id, @RequestBody UserVO userVO) {
+    public ResponseEntity<Void> update(@PathVariable(name = "id") String id, @RequestBody UserVO userVO) {
 
         log.debug("Inicializando o update [{}].", userVO);
 
@@ -53,7 +50,6 @@ public class UserAPI {
             user.setEmail(userVO.getEmail());
             user.setStatus(userVO.getStatus());
             user.setCreationDateTime(LocalDateTime.now());
-            user.setPassword(passwordEncoder.encode(userVO.getPassword()));
 
             return ResponseEntity.noContent().build();
         } else {
@@ -64,7 +60,7 @@ public class UserAPI {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserVO> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<UserVO> findById(@PathVariable("id") String id) {
 
         log.debug("Buscando entidade [{}].", id);
 
@@ -86,7 +82,7 @@ public class UserAPI {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<Void> delete(@PathVariable(name = "id") String id) {
 
         log.debug("Excluindo entidade [{}].", id);
         if (userService.existsById(id)) {

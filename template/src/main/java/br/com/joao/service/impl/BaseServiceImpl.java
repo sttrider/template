@@ -3,8 +3,7 @@ package br.com.joao.service.impl;
 import br.com.joao.entity.BaseEntity;
 import br.com.joao.service.BaseService;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.io.Serializable;
 import java.util.List;
@@ -57,5 +56,5 @@ public abstract class BaseServiceImpl<I extends Serializable, E extends BaseEnti
         }
     }
 
-    protected abstract JpaRepository<E, I> getRepository();
+    protected abstract MongoRepository<E, I> getRepository();
 }
