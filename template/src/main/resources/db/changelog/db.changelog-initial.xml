@@ -54,7 +54,7 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
-            <column defaultValueBoolean="true" name="status" type="BIT(1)">
+            <column defaultValueBoolean="false" name="enabled" type="BIT(1)">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueComputed="CURRENT_TIMESTAMP" name="creation_date_time" type="TIMESTAMP"/>
